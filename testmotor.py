@@ -6,7 +6,7 @@ STEP_PIN = 18
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(STEP_PIN, GPIO.OUT)
 
-DELAY = 0.0008   # 2ms high, 2ms low = 250Hz = 250 steps/sec
+DELAY = 0.00008   # 2ms high, 2ms low = 250Hz = 250 steps/sec
 
 print("Medium speed...")
 
