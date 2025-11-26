@@ -1,36 +1,41 @@
 import RPi.GPIO as GPIO
 import time
 
-# --- BCM pins ---
-STEP_PIN = 18    # physical pin 12
-DIR_PIN  = 4     # physical pin 7
-ENA_PIN  = 22    # physical pin 15
+STEP_PIN = 18   # pin 12
+DIR_PIN  = 4    # pin 7
 
-DELAY = 0.001    # adjust for speed (smaller = faster)
+DELAY = 0.001
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 GPIO.setup(STEP_PIN, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(DIR_PIN,  GPIO.OUT, initial=GPIO.LOW)
-GPIO.setup(ENA_PIN,  GPIO.OUT, initial=GPIO.HIGH)   # HIGH = enabled
 
-# Set direction (LOW = CW, HIGH = CCW)
+print("DIR LOW (CW)...")
 GPIO.output(DIR_PIN, GPIO.LOW)
 
-print("Motor spinning... Press Ctrl+C to stop")
-
 try:
-    while True:
+    t_end = time.time() + 3
+    while time.time() < t_end:
+        GPIO.output(STEP_PIN, GPIO.HIGH)
+        time.sleep(DELAY)
+        GPIO.output(STEP_PIN, GPIO.LOW)
+        time.sleep(DELAY)
+
+    print("DIR HIGH (CCW)...")
+    GPIO.output(DIR_PIN, GPIO.HIGH)
+
+    t_end = time.time() + 3
+    while time.time() < t_end:
         GPIO.output(STEP_PIN, GPIO.HIGH)
         time.sleep(DELAY)
         GPIO.output(STEP_PIN, GPIO.LOW)
         time.sleep(DELAY)
 
 except KeyboardInterrupt:
-    print("\nStopping motor...")
+    print("Interrupted.")
 
 finally:
-    GPIO.output(ENA_PIN, GPIO.LOW)   # disable driver (motor freewheels)
     GPIO.cleanup()
     print("Done.")
