@@ -12,9 +12,9 @@ print("Toggling GPIO18... Ctrl+C to stop")
 try:
     while True:
         GPIO.output(PIN, GPIO.HIGH)
-        time.sleep(0.1)
+        time.sleep(1)
         GPIO.output(PIN, GPIO.LOW)
-        time.sleep(0.1)
+        time.sleep(1)
 
 except KeyboardInterrupt:
     GPIO.cleanup()
