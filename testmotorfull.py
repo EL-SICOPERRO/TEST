@@ -16,7 +16,7 @@ print("DIR LOW (CW)...")
 GPIO.output(DIR_PIN, GPIO.LOW)
 
 try:
-    t_end = time.time() + 3
+    t_end = time.time() + 10
     while time.time() < t_end:
         GPIO.output(STEP_PIN, GPIO.HIGH)
         time.sleep(DELAY)
@@ -26,7 +26,7 @@ try:
     print("DIR HIGH (CCW)...")
     GPIO.output(DIR_PIN, GPIO.HIGH)
 
-    t_end = time.time() + 3
+    t_end = time.time() + 10
     while time.time() < t_end:
         GPIO.output(STEP_PIN, GPIO.HIGH)
         time.sleep(DELAY)
