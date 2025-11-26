@@ -1,43 +1,41 @@
-import lgpio
+import RPi.GPIO as GPIO
 import time
 
-# --- PIN ASSIGNMENT ---
-STEP = 18
-DIR  = 4
-ENA  = 22
+# --- PIN DEFINITIONS (BCM numbering) ---
+STEP_PIN = 18   # physical pin 12
+DIR_PIN  = 4    # physical pin 7
+ENA_PIN  = 22   # physical pin 15
 
-# --- STEP SPEED ---
-DELAY = 0.002   # 2 ms HIGH + 2 ms LOW = 250 steps/s (safe speed)
+# --- CONFIG ---
+DELAY = 0.002   # 2ms = 500 steps/sec (good safe speed)
 
-# Open RP1 GPIO chip
-h = lgpio.gpiochip_open(0)
+# --- SETUP ---
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
-# Set pins as outputs
-lgpio.gpio_claim_output(h, STEP)
-lgpio.gpio_claim_output(h, DIR)
-lgpio.gpio_claim_output(h, ENA)
+GPIO.setup(STEP_PIN, GPIO.OUT)
+GPIO.setup(DIR_PIN, GPIO.OUT)
+GPIO.setup(ENA_PIN, GPIO.OUT)
 
 # Enable driver
-lgpio.gpio_write(h, ENA, 1)     # ENA HIGH = driver ON
+GPIO.output(ENA_PIN, GPIO.HIGH)   # ENA HIGH = enabled
 
 # Set direction
-lgpio.gpio_write(h, DIR, 0)     # 0 = CW, 1 = CCW
+GPIO.output(DIR_PIN, GPIO.LOW)    # LOW = CW, HIGH = CCW
 
-print("Motor spinning... Press Ctrl+C to stop.")
+print("Stepper running... Press Ctrl+C to stop.")
 
 try:
     while True:
-        lgpio.gpio_write(h, STEP, 1)
+        GPIO.output(STEP_PIN, GPIO.HIGH)
         time.sleep(DELAY)
-        lgpio.gpio_write(h, STEP, 0)
+        GPIO.output(STEP_PIN, GPIO.LOW)
         time.sleep(DELAY)
 
 except KeyboardInterrupt:
-    pass
+    print("\nStopping motor...")
 
-# Disable driver
-lgpio.gpio_write(h, ENA, 0)
-
-# Cleanup
-lgpio.gpiochip_close(h)
-print("Stopped.")
+finally:
+    GPIO.output(ENA_PIN, GPIO.LOW)  # Disable driver
+    GPIO.cleanup()
+    print("GPIO cleaned. Done.")
