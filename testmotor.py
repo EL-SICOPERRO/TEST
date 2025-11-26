@@ -1,21 +1,21 @@
 import RPi.GPIO as GPIO
 import time
 
-STEP_PIN = 18  # BCM, physical pin 12
+STEP_PIN = 18
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(STEP_PIN, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(STEP_PIN, GPIO.OUT)
 
-print("Sending STEP pulses on GPIO18... Ctrl+C to stop")
+DELAY = 0.008   # 2ms high, 2ms low = 250Hz = 250 steps/sec
+
+print("Medium speed...")
 
 try:
     while True:
-        GPIO.output(STEP_PIN, GPIO.HIGH)
-        time.sleep(0.05)   # 20 steps per second
-        GPIO.output(STEP_PIN, GPIO.LOW)
-        time.sleep(0.05)
+        GPIO.output(STEP_PIN, 1)
+        time.sleep(DELAY)
+        GPIO.output(STEP_PIN, 0)
+        time.sleep(DELAY)
 
 except KeyboardInterrupt:
     GPIO.cleanup()
-    print("Stopped and cleaned up")
